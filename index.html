@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Thư gửi anh...</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Đổi sang font Patrick Hand hỗ trợ tiếng Việt mượt mà tuyệt đối -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Patrick+Hand&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #e6e2dd; /* Màu nền xám ấm nhẹ nhàng */
+            --paper-color: #fdfbf7; /* Màu giấy trắng kem */
+            --text-color: #3f3a36; /* Màu chữ nâu đen */
+            --tulip-leaf: #b5c4b1;
+            --tulip-outline: #e0d9d3;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            font-family: 'Lora', serif;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* --- Màn Hình Chờ --- */
+        #intro-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        .wax-seal {
+            background-color: #8c4242;
+            color: #fcebeb;
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-family: 'Playfair Display', serif; font-size: 1.1rem; letter-spacing: 1px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.15);
+            cursor: pointer;
+            position: relative;
+            text-transform: uppercase;
+        }
+        
+        .wax-seal::after {
+            content: ''; position: absolute;
+            width: 68px; height: 68px;
+            border-radius: 50%;
+            border: 1px dashed rgba(255,255,255,0.4);
+        }
+
+        .hint-text {
+            margin-top: 25px; color: #8c8279; font-size: 0.95rem; font-style: italic;
+        }
+
+        /* --- Khung Thư --- */
+        #main-content {
+            display: none;
+            width: 100%;
+            max-width: 650px;
+            padding: 20px 15px;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .paper-sheet {
+            background-color: var(--paper-color);
+            width: 100%;
+            border-radius: 4px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+            padding-bottom: 60px;
+        }
+
+        /* --- SVG TULIP TRẮNG (Vẽ đồ họa mộc mạc) --- */
+        .svg-tulip-container {
+            width: 100%;
+            padding: 40px 0 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+            background: linear-gradient(to bottom, #f7f4ef, var(--paper-color));
+        }
+
+        .svg-tulip-container svg {
+            width: 180px; /* Kích thước vừa phải, thanh lịch */
+            height: auto;
+            display: block;
+        }
+
+        /* --- Tờ Note Đọc Sớm --- */
+        #early-message-note {
+            display: none;
+            background-color: #fff8e1;
+            padding: 15px 20px;
+            box-shadow: 2px 3px 8px rgba(0,0,0,0.05);
+            transform: rotate(-1.5deg);
+            position: relative;
+            margin: 30px auto;
+            width: 85%;
+            text-align: center;
+            border: 1px solid #f2eed6;
+            border-radius: 2px;
+        }
+
+        /* Miếng băng keo */
+        #early-message-note::before {
+            content: '';
+            position: absolute;
+            top: -8px; left: 50%;
+            transform: translateX(-50%) rotate(2deg);
+            width: 40px; height: 14px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+
+        .note-text {
+            font-family: 'Patrick Hand', cursive; /* Đã đổi font */
+            font-size: 1.7rem;
+            color: #594d3a;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Nội dung chữ --- */
+        .letter-body {
+            padding: 30px 40px 0 40px;
+        }
+
+        .text-content {
+            font-size: 1.05rem;
+            line-height: 2.1;
+            color: var(--text-color);
+            text-align: justify;
+        }
+
+        .text-content p {
+            margin-bottom: 22px;
+        }
+
+        .quote {
+            padding: 15px 25px;
+            margin: 30px 0;
+            border-left: 2px solid #c9c0b8;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: #696057;
+            background-color: #f7f6f2;
+        }
+
+        .quote p { margin: 0 0 8px 0; }
+        .quote p:last-child { margin: 0; }
+
+        .highlight-center {
+            text-align: center; 
+            margin: 35px 0; 
+            font-family: 'Playfair Display', serif; 
+            font-style: italic; 
+            color: #8f857d;
+        }
+
+        /* Chữ ký */
+        .signature {
+            margin-top: 50px;
+            text-align: right;
+            border-top: 1px solid rgba(0,0,0,0.03);
+            padding-top: 20px;
+        }
+
+        .signature span {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: #7a6e65;
+        }
+
+        @media (max-width: 600px) {
+            .letter-body { padding: 20px 25px 0 25px; }
+            .svg-tulip-container svg { width: 150px; }
+            .note-text { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgm" loop>
+        <source src="nhac-chua-lanh.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="intro-screen">
+        <div class="wax-seal" id="open-btn">Mở</div>
+        <div class="hint-text">Chạm để mở thư</div>
+    </div>
+
+    <div id="main-content">
+        <div class="paper-sheet">
+            
+            <!-- ĐỒ HỌA TULIP TRẮNG (Vẽ tay bằng code, nhẹ nhàng, thanh lịch) -->
+            <div class="svg-tulip-container">
+                <svg viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">
+                    <g id="tulip-bunch">
+                        <!-- Lá và cành -->
+                        <path d="M100,230 Q90,150 70,90" fill="none" stroke="var(--tulip-leaf)" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M100,230 Q110,160 130,100" fill="none" stroke="var(--tulip-leaf)" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M100,230 Q100,160 100,80" fill="none" stroke="var(--tulip-leaf)" stroke-width="3" stroke-linecap="round"/>
+                        
+                        <!-- Lá -->
+                        <path d="M100,200 Q50,160 60,110 Q80,150 100,180" fill="var(--tulip-leaf)" opacity="0.8"/>
+                        <path d="M100,190 Q150,150 140,90 Q120,140 100,170" fill="var(--tulip-leaf)" opacity="0.8"/>
+                        <path d="M95,220 Q40,200 30,150 Q60,180 95,210" fill="var(--tulip-leaf)" opacity="0.6"/>
+
+                        <!-- Hoa 1 (Trái) -->
+                        <g transform="translate(70,90) scale(0.7) rotate(-15)">
+                            <path d="M0,0 C-20,-10 -25,-40 -10,-55 C5,-35 10,-10 0,0" fill="#ffffff" stroke="var(--tulip-outline)" stroke-width="1.5"/>
+                            <path d="M0,0 C20,-10 25,-40 10,-55 C-5,-35 -10,-10 0,0" fill="#ffffff" stroke="var(--tulip-outline)" stroke-width="1.5"/>
+                            <path d="M-8,-40 C0,-60 15,-60 8,-40" fill="#ffffff" stroke="var(--tulip-outline)" stroke-width="1"/>
+                            <path d="M-10,-55 C0,-70 10,-55 0,-15" fill="#ffffff" stroke="var(--tulip-outline)" stroke-width="1.5"/>
+                        </g>
+
+                        <!-- Hoa 2 (Phải) -->
+                        <g transform="translate(130,100) scale(0.65) rotate(15)">
+                            <path d="M0,0 C-20,-10 -25,-40 -10,-55 C5,-35 10,-10 0,0" fill="#ffffff" stroke="var(--tulip-outline)" stroke-width="1.5"/>
+                            <path d="M0,0 C20,-10 25,-40 10,-55 C-5,-35 -10,-10 0,0" fill="#ffffff" stroke="var(--tulip-outline)" stroke-width="1.5"/>
+                            <path d="M-8,-40 C0,-60 15,-60 8,-40" fill="#ffffff" stroke="var(--tulip-outline)" stroke-width="1"/>
+                            <path d="M-10,-55 C0,-70 10,-55 0,-15" fill="#ffffff" stroke="var(--tulip-outline)" stroke-width="1.5"/>
+                        </g>
+
+                        <!-- Hoa 3 (Chính giữa - Lớn nhất) -->
+                        <g transform="translate(100,80) scale(0.9)">
+                            <path d="M0,0 C-25,-15 -30,-50 -12,-70 C10,-45 15,-15 0,0" fill="#ffffff" stroke="var(--tulip-outline)" stroke-width="1.5"/>
+                            <path d="M0,0 C25,-15 30,-50 12,-70 C-10,-45 -15,-15 0,0" fill="#ffffff" stroke="var(--tulip-outline)" stroke-width="1.5"/>
+                            <path d="M-10,-50 C0,-75 20,-75 10,-50" fill="#ffffff" stroke="var(--tulip-outline)" stroke-width="1"/>
+                            <path d="M-12,-70 C0,-90 12,-70 0,-20" fill="#ffffff" stroke="var(--tulip-outline)" stroke-width="1.5"/>
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            
+            <div class="letter-body">
+                
+                <!-- Tờ Note Ẩn -->
+                <div id="early-message-note">
+                    <div class="note-text">
+                        Lại hong nghe lời mà đọc sớm hơn rồi hảaa
+                    </div>
+                </div>
+
+                <div class="text-content">
+                    <p>Trước hết thì đây hong phải một lời níu kéo nào chỉ là em cảm giác nếu chúng ta nói chuyện trực tiếp hay gián tiếp qua tin nhắn em sẽ bị đẩy ra xa nên em đành gửi hết lòng mình vào đây để thôi nghĩ về anh nha anh Bo.</p>
+
+                    <p>Nếu như anh còn một chút thương em thì hãy đọc hết những gì em viết nhé, còn không anh giúp Hy đọc dòng cuối cùng thôi là được rồi nhé.</p>
+
+                    <p>Hmmm cảm ơn anh vì khoản thời gian qua nha, thật sự rằng có lẽ, có lẽ thôi nha, anh nghĩ em bước vào mối quan hệ này với tâm thế xem nó như một giải pháp để em trị liệu tâm lý đúng không, nhưng anh à thật ra từ lâu rồi em đã rung động với một người tại một nơi xa lạ, sẵn lòng đưa em đi khám phá mảnh đất mà em hằng ao ước để được đi đến mà không bị phàn nàn, nghe có vẻ khiên cưỡng nhưng mà em đã động lòng với những điều nhỏ bé ấy thực ra, em đã rung động từ ngày thứ hai mà mình đi chung với nhau rồi… hẹ hẹ, xin lũi nha người dễ gung động.</p>
+
+                    <p>Em thích sự nhẹ nhàng sự kiên nhẫn và giữ mình đó khiến em tin tưởng và cảm thấy an toàn mặc dù chúng ta chưa là gì của nhau hết thì em đã cảm nhận được sự an toàn rồi nhưng vẫn chưa chắc chắn đâu =)) ngày đó em còn nhịn hút thuốc nữa cơ anh xin điếu thuốc làm em còn giật mình -.- thế là đã rung động thật rồi.</p>
+
+                    <p>Đấy là cái ngày mà mình ở công viên Sư Vạn Hạnh đó hmm hôm đó là tui thích anh rồi cái hôm mà mình đi tới khuyaaaa lắc khuya lơ ngồi ở công viên, ngày đó thực sự em đã muốn nằm vào lòng anh và anh đã đồng ý hệ hệ ôi thích vãi -.- về còn được tin nhắn quan tâm nữa chưa bao giờ em cảm giác ổn như vậy sau bao nhiêu thời gian phải mệt mỏi tại nơi Sài Thành này thế cũng xoá Tinder ngắt kết nối với tất cả.</p>
+
+                    <p>Sau bao nhiêu đó thì em chỉ muốn giữ lại anh cho riêng mình, em dắt anh tỏ tình em trước đó sợ chưa cái lúc bà đi nhậu với thằng Tuấn, tui cố tình call video để mấy người ghen đó…. Và thế là có bó hoa đầu tiên trong đời mà em được tặng, hmmm quý đến mức bây giờ vẫn còn giữ lại một hoa khô ở cạnh bên hời ơi thích lắm á, tuổi 18 mà mơ mộng, hoài bão và yêu thương lắm đó mà hong biết cái sự việc cố tình đó có bị người ta biết không nữa -.- "Em đồng ý"</p>
+
+                    <p class="highlight-center">Và rồi chúng mình quen nhau...</p>
+
+                    <p>Sau đó chúng ta đã xem 1 quẻ Tarot với nhau hmmm em vẫn nhớ trãi bài thực sự là như thế này: Trong mối quan hệ này sẽ dễ dàng đạt được hạnh phúc, tuy nhiên để có được hạnh phúc bền lâu thì cả hai bên phải thực sự học được cách xem lại chính mình, nhìn nhận lỗi lầm của nhau, cùng nhau sửa chữa lỗi lầm ấy mặc dù rất khó khăn nhưng nếu vượt qua được thì mối quan hệ này sẽ phát triển hơn nữa tuy nhiên sẽ có vấn đề xảy ra, anh sẽ là người sẽ chọn cách rời đi.</p>
+
+                    <p>Anh có biết câu nói làm em hạnh phúc nhất là gì không?</p>
+                    
+                    <div class="quote">
+                        <p>– Em tin anh không?</p>
+                        <p>– Haaa em tin cái gì?</p>
+                        <p>– Anh sẽ thay đổi trãi bài này của em.</p>
+                    </div>
+
+                    <p>Ngày nhậu cùng mọi người ở Lê Văn Quới em có thể đã khóc to hơn khi nghe được câu này: <br><i>"Em là hiện tại của anh, là tương lai sau này của anh, anh thương em lắm"</i></p>
+
+                    <p>Anh nói xem qua bao nhiêu chuyện em có thể bước vào mối quan hệ này với tâm thế anh là người thay thế được sao, thật ra năm đó, động lòng là thật, yêu thương là thật, lời đồng ý đó cũng là thật, tình cảm lúc đó, cũng là thật. Nên anh đừng buồn nữa nha anh.</p>
+
+                    <p>Chuyện ẩn ảnh của người cũ là thật, chuyện xoá ảnh của người yêu cũ cũng là thật, cả hai điều là thật, em không có lời biện minh nào để khiến hành động của mình trở nên đúng hơn, em chỉ muốn nói thật cảm xúc của em lúc đó. Khi em ẩn ảnh, không phải vì em còn yêu hay muốn quay lại. Em chỉ chưa đủ sẵn sàng để xóa ngay một phần ký ức từng tồn tại. Em cần thêm thời gian để khép lại theo cách của mình một cách chắc chắn.</p>
+
+                    <p>Thật ra câu nói ở Coopmart Châu Đốc là em nói dối đấy, em nói dối rằng em cần một người ở bên cạnh nên mới nói đồng ý quen anh, lúc đó em chưa hiểu chuyện cứ nghĩ rằng nói như thế để cho xong chuyện và buộc anh im lặng thế là bắt đầu tổn thương anh cùng những lần cãi vã tiếp theo thật buồn ha chỉ vì lời nói dối lúc chưa hiểu chuyện haizzz</p>
+
+                    <p>Sau đó mình cùng nhau về quê ăn tết, rồi lại lên chuyển đến một nơi ở mới, anh biết không, khoản thời gian ấy thực sự rất vui… là thời gian mà em cảm thấy em đã là người hạnh phúc nhất trên cõi đời này chúng ta cùng nhau làm, cùng nhau đi học, cùng nhau tắm, cùng nhau làm việc nhà, cùng nhau nấu cơm, cùng nhau giặt giũ, cùng nhau yêu thương và vun vén, một vài người trong gia đình chúng ta điều biết, bạn bè chúng ta điều biết vậy…. Ngoại trừ sự thừa nhận và một lễ cưới… mình đã thực sự xem như đã cưới nhau rồi anh nhỉ…</p>
+
+                    <p>Xong em sợ lắm em sợ anh không còn khả năng em thì càng không có khả năng đó em sợ một ngày nào đó chúng mình sẽ tan vỡ vì nó, đêm đó em cãi nhau, em đẩy anh ra vì em sợ anh sẽ bị ảnh hưởng bởi tiêu cực của em, nhưng em tin và thương chứ sao không thương được chỉ là, em thực sự chỉ muốn một mình em giải quyết, nếu cả hai cùng tiêu cực thì em sợ chuyện mình sẽ không xong mất em xin lỗi là em chưa hiểu sự quan tâm đó nên em mới chạy lên sân thượng mà khóc</p>
+
+                    <p>Thế rồi chuyện đó xảy ra. Em cay, em tức, em làm nhiều chuyện rồi em mới giật mình nhận ra em đang phát điên vì cái đéo gì vậy... Muốn kéo người đó về chỉ để chia rẽ tụi nó, để làm gì???????????????????????? Rồi em lại tự hỏi mình còn tình cảm không, và trong lúc mất lý trí bởi cảm xúc rối bời, em đã từng nghĩ là em còn một cái gì đó nhưng haizzz... còn cái gì? Nếu em thực sự còn thì đã không tiếp tục với người khác, đã không chọn anh. Vậy thì rốt cuộc là còn cái gì? Em nghĩ mãi cũng chẳng thể nào hiểu nổi lúc đó bản thân mình đang làm cái quái gì nữa, em suy sụp quá, đến cuối cùng, sau vài ngày em mới hiểu rằng, người đó từ lâu không còn là người em thương nữa rồi nhưng đến giờ em cũng thực sự không hiểu được em đang phát điên cái gì nữa</p>
+
+                    <p>Điều khiến em đau nhất là đến bây giờ em vẫn không biết phải giải thích hành động của mình thế nào cho đúng em không cố bao biện, cũng không mong anh tha thứ. Em chỉ biết rằng em đã sai, em đã đánh mất lòng tin của anh, đánh mất người thật lòng thương em vì những lựa chọn sai của em và vì em đã không đủ tỉnh táo để đối diện với cảm xúc của chính mình qua bao nhiêu chuyện, anh vẫn chọn ở lại cùng em với những vết thương khó phai và một niềm tin đã vỡ vụn em đau, em thương nhưng em chẳng biết phải làm sao. Em chỉ nghĩ mình phải yêu anh nhiều hơn, phải cố gắng nhiều hơn, phải làm mọi cách để quay về khoảng thời gian trước đó</p>
+
+                    <p>Nhưng càng sợ mất anh, em lại càng lo âu, càng áp lực, càng ghen, càng bất an. Hôm anh chụp ảnh cho em, em cứ cảm thấy anh không còn đặt hết tâm vào em nữa. Mà nếu thật sự có như vậy thì cũng là vì em đã làm anh tổn thương trước. Em ghen, em giận, nhưng em nhớ anh từng nói lúc nóng giận đừng nói những lời làm tổn thương nhau. Nên em chọn im lặng để bình tĩnh. Em không biết rằng chính sự im lặng đó lại làm anh đau lòng em không dám níu anh vì em sợ anh thấy ngột ngạt, thấy khó chịu nhưng lúc anh đi, lòng em đau lắm. Em hoảng loạn, em chỉ muốn anh quay lại, muốn anh về với em ngay lúc đó. Những lời khó nghe em nói không phải vì em ghét anh, mà vì em đã quá sợ mất anh và không biết giữ anh bằng cách nào hết</p>
+                    
+                    <p>Hiện tại anh là tất cả của em, là tương lai của em, anh là người em thương.</p>
+
+                    <p>Bo ơi… em thương anh nhiều lắm trước đây có lẽ em còn giữ lại một phần để thương chính mình nhưng sau tất cả mọi chuyện, trong lòng em chỉ còn nỗi sợ mất anh, em biết yêu nhiều không có nghĩa là yêu đúng em đã để cái tôi quá lớn, để cảm xúc quá hỗn loạn và làm tổn thương người em yêu nhất, em đánh mất anh vì em đã không biết cách bảo vệ người mình đã chọn, em ghét em lắm…</p>
+
+                    <p>Nếu như bỏ khoản thời gian bão giông cuối tháng 5 đó, mọi sự yêu thương điều là thật lòng, em trân trọng anh lắm ngày càng trân trọng hơn và hơn nữa, em sai hoàn toàn rồi Bo ơi, em không hiểu em đã và đang làm gì nữa, em chỉ có thể xin lỗi thôi</p>
+
+                    <p>Trong em là tận cùng của sự tội lỗi với ân hận Bo ơi, em ân hận từ lúc đó rồi, nhưng mà…. Hic em khó hiểu quá em không hiểu em nữa, em xin lỗi đến bên anh chỉ để làm anh thấy tổn thương, em không biết lấy cái gì ra để bù đắp nữa, qua thời gian đó thật sự em đã yêu đứt ruột rồi anh về nhà em cảm giác em sợ mất em nhắn tin hơi khó nghe, anh thông cảm cho em nha…</p>
+
+                    <p>Có thể em đã nợ anh một mối duyên tình rồi, nếu có thể sau này anh mở ra cơ hội cho em nhé, em không chắc nó sẽ thành công nhưng mà em thực sự đã hiểu yêu là gì rồi, cũng biết đánh mất là như thế nào rồi, nói hơi khó nghe nhưng anh nhìn a Đăng và Khoa, c Nghi và người yêu mà suy nghĩ lại nha anh… không cần phải là bây giờ đâu, trễ cũng được em sẽ dành hết tâm can để bù đắp lại tất cả những gì em đã sai mà yêu anh một cách trọn vẹn hơn, mình không quay lại, mình làm lại với sự thay đổi tốt hơn của em nha anh</p>
+
+                    <p>Nếu em không sửa nó vẫn là một kí ức không vui nhưng nếu em sửa rồi thì mình sẽ có một tương lai tốt, sáng lạng hơn nha anh, anh cho phép em nha Bo cho em quay lại bên anh với tình yêu đơn thuần nhất của em cho em được nâng niu lại khuôn mặt đó nha….. em hứa em sẽ trân trọng và không làm anh thất vọng, sẽ bằng hành động chứ không phải lời nói, nha anh, em không muốn anh phải đau tiếp với ai em cũng sợ người ta cũng tệ lại làm anh đau em xin được ích kỹ giữ anh lại nha Bo, anh hãy ích kỹ một lần để em bỏ ra tình cảm để thương anh nha Bo, mình không nhớ và sống ở quá khứ nữa, mình cùng nhau ở hiện tại và tương lai nha anh</p>
+
+                    <p>Em chỉ đề nghị như vậy thôi nha nếu anh không cần em nữa thì mong rằng anh xem em là em trai cũng được phải sống thật vui vẻ nha nhưng em xin một điều cuối cùng...</p>
+                    
+                    <div class="quote">
+                        <p>Nếu anh đang liên lạc hay tìm hiểu ai khác, mong anh hãy chặn em trên mọi phương diện mạng xã hội nha. Em sợ phải nhìn thấy những điều làm mình đau lòng, vậy là đủ rồi. Còn nếu hiện tại anh vẫn chưa để ai bước vào, thì dù kết quả giữa hai đứa mình có ra sao đi nữa... em vẫn luôn thương anh, Bo à.</p>
+                    </div>
+                </div>
+
+                <div class="signature">
+                    <span>Bảo Hy</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Kiểm tra đọc sớm
+        const initLetter = () => {
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            // 15/07 (tháng 6 vì JS đếm từ 0)
+            const targetDate = new Date(currentYear, 6, 15); 
+            
+            if (today < targetDate) {
+                document.getElementById('early-message-note').style.display = 'block';
+            }
+        };
+
+        // Mở thư
+        document.getElementById('open-btn').addEventListener('click', function() {
+            const bgm = document.getElementById('bgm');
+            bgm.volume = 0.4;
+            bgm.play().catch(e => console.log("Cần file nhạc nhac-chua-lanh.mp3"));
+
+            const introScreen = document.getElementById('intro-screen');
+            introScreen.style.opacity = '0';
+            introScreen.style.visibility = 'hidden';
+
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+                const mainContent = document.getElementById('main-content');
+                mainContent.style.display = 'block';
+                initLetter(); 
+            }, 600); 
+        });
+    </script>
+</body>
+</html>
+
+
+```
